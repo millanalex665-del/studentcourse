@@ -1,4 +1,5 @@
 class Menu:
+      # Display menu options to the user
     @staticmethod
     def show_main_menu():
         print("\n--- Student Course Registration System ---")
