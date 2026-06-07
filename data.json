@@ -1,4 +1,22 @@
 {
-    "students": {},
-    "courses": {}
+    "students": {
+        "00192": {
+            "name": "Macmillan ALex",
+            "courses": [
+                "1100"
+            ]
+        },
+        "0019": {
+            "name": "",
+            "courses": []
+        },
+        "0938": {
+            "name": "jerry",
+            "courses": []
+        }
+    },
+    "courses": {
+        "1100": "IT",
+        "3": "evm"
+    }
 }

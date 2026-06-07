@@ -6,68 +6,64 @@ from course import Course
 
 class Application:
     def __init__(self):
-        # Load saved data from JSON file
         self.data = DataStore.load_data()
-        
-        # Create registration handler
         self.registration = Registration()
 
     def run(self):
-        # Loop keeps the program running until user exits
         while True:
             Menu.show_main_menu()
             choice = input("Select option: ")
 
-            # Add new student
+            # 1. Add Student
             if choice == "1":
                 sid = input("Student ID: ")
                 name = input("Student Name: ")
                 self.data["students"][sid] = {"name": name, "courses": []}
-                print("Student added successfully.")
+                DataStore.save_data(self.data) # AUTO-SAVE
+                print("Student added and saved.")
 
-            # Add new course
+            # 2. Add Course
             elif choice == "2":
                 code = input("Course Code: ")
                 title = input("Course Title: ")
                 self.data["courses"][code] = title
-                print("Course added successfully.")
+                DataStore.save_data(self.data) # AUTO-SAVE
+                print("Course added and saved.")
 
-            # Register student to course
+            # 3. Register Student to Course
             elif choice == "3":
                 sid = input("Student ID: ")
                 code = input("Course Code: ")
 
-                # Validate student and course existence
                 if sid in self.data["students"] and code in self.data["courses"]:
-                    # Create student object
+                    # Recreate object from stored data
                     student = Student(sid, self.data["students"][sid]["name"])
+                    student.set_courses(self.data["students"][sid]["courses"])
                     
-                    # Restore student courses from stored data
-                    student._Student__courses = self.data["students"][sid]["courses"]
-                    
-                    # Create course object
                     course = Course(code, self.data["courses"][code])
 
-                    # Register student
+                    # Register using your registration logic
                     self.registration.register(student, course)
 
-                    # Save updated courses
+                    # Update the main data dictionary with the new course list
                     self.data["students"][sid]["courses"] = student.get_courses()
-                    print("Student registered successfully.")
+                    
+                    # SAVE TO FILE IMMEDIATELY
+                    DataStore.save_data(self.data)
+                    print(f"Registration successful. Data synced to {DataStore.FILE_NAME}")
                 else:
-                    print("Invalid student or course.")
+                    print("Error: ID or Course Code not found.")
 
-            # Display all students
+            # 4. Display
             elif choice == "4":
+                if not self.data["students"]:
+                    print("No students found.")
                 for sid, info in self.data["students"].items():
-                    print(f"\nID: {sid}, Name: {info['name']}")
-                    print("Courses:", ", ".join(info["courses"]) or "None")
+                    print(f"\nID: {sid} | Name: {info['name']}")
+                    print(f"Courses: {', '.join(info['courses']) if info['courses'] else 'None'}")
 
-            # Exit and save data
+            # 5. Exit
             elif choice == "5":
                 DataStore.save_data(self.data)
-                print("Data saved. Exiting...")
+                print("System closed safely.")
                 break
-
-            else:
-                print("Invalid option.")

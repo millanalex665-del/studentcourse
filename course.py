@@ -5,3 +5,4 @@ class Course:
 
     def get_details(self):
         return f"{self.code} - {self.title}"
+#“Course represents course data as a real-world object.”

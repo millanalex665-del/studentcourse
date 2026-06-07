@@ -6,17 +6,17 @@ class DataStore:
 
     @staticmethod
     def load_data():
-        # Load data if file exists
         if os.path.exists(DataStore.FILE_NAME):
-            with open(DataStore.FILE_NAME, "r") as file:
-                return json.load(file)
+            try:
+                with open(DataStore.FILE_NAME, "r") as file:
+                    return json.load(file)
+            except json.JSONDecodeError:
+                # If file is corrupted, return default structure
+                return {"students": {}, "courses": {}}
         
-        # Default data structure
         return {"students": {}, "courses": {}}
 
     @staticmethod
     def save_data(data):
-        # Save data to JSON file
         with open(DataStore.FILE_NAME, "w") as file:
             json.dump(data, file, indent=4)
-
